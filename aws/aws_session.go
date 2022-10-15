@@ -9,8 +9,10 @@ type SessionHandler struct {
 	region string
 }
 
+// InitSession Initialize new AWS sesion
+func (receiver *SessionHandler) InitSession() session.Session {
+	configs := aws.NewConfig().WithRegion(receiver.region)
+	session := session.Must(session.NewSession(configs))
 
-func (receiver *SessionHandler) InitSession() {
-	configs := aws.NewConfig().WithRegion("eu-west-1")
-	session.Must(session.NewSession(configs))
+	return *session
 }

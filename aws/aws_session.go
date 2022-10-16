@@ -3,16 +3,22 @@ package awswrapper
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/omar-bizreh/email-service/aws/contracts"
 )
 
 type SessionHandler struct {
-	region string
+	Region            string
+	sessionInitalized bool
 }
 
 // InitSession Initialize new AWS sesion
-func (receiver *SessionHandler) InitSession() session.Session {
-	configs := aws.NewConfig().WithRegion(receiver.region)
+func (receiver *SessionHandler) InitSession() (container contracts.SessionContainer) {
+	configs := aws.NewConfig().WithRegion(receiver.Region)
 	session := session.Must(session.NewSession(configs))
 
-	return *session
+	awsContainer := &contracts.SessionContainer{AwsSession: *session}
+
+	receiver.sessionInitalized = true
+
+	return *awsContainer
 }

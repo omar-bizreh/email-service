@@ -2,13 +2,26 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"net/smtp"
 	"os"
 	"strings"
+
+	awswrapper "github.com/omar-bizreh/email-service/aws"
 )
 
 // MailService Send emails
 type MailService struct{}
+
+func getSenderAppKey() (*string, error) {
+	awsSession := awswrapper.SessionHandler{Region: os.Getenv("AWS_REGION")}
+	sessionContainer := awsSession.InitSession()
+	awsClient := AwsService{Session: sessionContainer}
+
+	param, err := awsClient.GetParam("DBConnectionString")
+
+	return param, err
+}
 
 // SendEmail sends email DUH!
 func (service *MailService) SendEmail(to string, subject string, body string) {
@@ -20,7 +33,16 @@ func (service *MailService) SendEmail(to string, subject string, body string) {
 	strBuilder.WriteString("Subject: FCM Tokens Report\n")
 	strBuilder.WriteString(body)
 
-	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, os.Getenv("supportAuth"), "smtp.gmail.com"), from, []string{to}, []byte(strBuilder.String()))
+	key, err := getSenderAppKey()
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	smtpHost := os.Getenv("SMTP")
+	smtpPort := os.Getenv("PORT")
+
+	err = smtp.SendMail(smtpHost+":"+smtpPort, smtp.PlainAuth("", from, *key, smtpHost), from, []string{to}, []byte(strBuilder.String()))
 	if err != nil {
 		fmt.Println(err.Error())
 	}

@@ -24,7 +24,7 @@ func (handler *AwsDynamo) initClient() *dynamodb.DynamoDB {
 }
 
 func (handler *AwsDynamo) PutItem(input *evenetContracts.SendEmailEvent) error {
-	if handler.isClientInitialized == false {
+	if !handler.isClientInitialized {
 		handler.initClient()
 	}
 

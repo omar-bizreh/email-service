@@ -11,14 +11,15 @@ import (
 )
 
 // MailService Send emails
-type MailService struct{}
+type MailService struct {
+}
 
 func getSenderAppKey() (*string, error) {
 	awsSession := awswrapper.SessionHandler{Region: os.Getenv("AWS_REGION")}
 	sessionContainer := awsSession.InitSession()
 	awsClient := AwsService{Session: sessionContainer}
 
-	param, err := awsClient.GetParam("DBConnectionString")
+	param, err := awsClient.GetParam("SENDER_CREDETNAILS")
 
 	return param, err
 }
@@ -30,7 +31,7 @@ func (service *MailService) SendEmail(to string, subject string, body string) {
 
 	strBuilder.WriteString("To: " + to + "\n")
 	strBuilder.WriteString("From: Support" + "<" + from + ">\n")
-	strBuilder.WriteString("Subject: FCM Tokens Report\n")
+	strBuilder.WriteString("Subject:" + subject + " \n")
 	strBuilder.WriteString(body)
 
 	key, err := getSenderAppKey()

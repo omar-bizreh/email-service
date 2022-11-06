@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/omar-bizreh/email-service/aws/contracts"
-	evenetContracts "github.com/omar-bizreh/email-service/eventcontracts"
+	evenetContracts "github.com/omar-bizreh/email-service/eventContracts"
 )
 
 type AwsDynamo struct {
